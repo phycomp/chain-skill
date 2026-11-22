@@ -50,6 +50,8 @@ List the skills under review and capture for each:
 
 ### Self-developed skills
 
+> **唯一來源宣告：** `~/.config/skill-timer/self-developed.list`（由 `skill-timer` 擁有）是「哪些 skill 算自行開發」的 single source of truth。下表**僅供重構盤點索引**，不是判定依據。增刪 skill 時先改 allow-list，再同步下表。
+
 Example inventory (self-developed skills):
 
 | Skill | Triggers | Core actions | Lower-level hooks |
@@ -202,3 +204,4 @@ When converting a skill into Traditional Chinese (繁體中文):
   compliance. This skill owns the loop and the goal-based hook decision.
 - Logic check: 2026-11-22 — renamed from `inspect-skill`; frontmatter/description/title updated, all parent-child references rewritten, stray `EOF`/`echo` removed. Second pass: `rev-skill` inventory row corrected (alias + rename + logic check, not Chinese conversion); Step 6 now hooks the chain `chain-skill → rev-skill → viz-dboard` for doc/code compliance instead of duplicating them.
 - Logic check: 2026-11-23 — rewritten as the **loop methodology** (user request: 「依照使用情境需求、嚴格邏輯、規則清楚、文件層合規、程式層合規、上下級鏈、分工明確、需要時才 hook、形成閉環、沉澱成 loop」). Added Core invariant loop table, need-based hook predicate, doc/code compliance stages, path invariant, and loop-closure requirement. Name kept as `chain-skill` per user decision; no new `loop-skill` created. RED evidence reused from prior observations (stale two-demo doc, raw matplotlib source misused, 荐家 path, unnecessary viz-dboard hook, doc-only fix).
+- Logic check: 2026-11-23 (second pass) — declared `skill-timer`'s allow-list as the **single source of truth** for "self-developed"; the Inventory table is now explicitly **index-only**. Same declaration added to `skill-toolchain`'s Available skills table so the three lists cannot drift silently. No refactor rules duplicated.
