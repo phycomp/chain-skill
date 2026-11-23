@@ -65,6 +65,11 @@ Example inventory (self-developed skills):
 | `quant-algo-auto` | quant trading/channel ops | strategy, backtest, risk, content | none |
 | `viz-dboard` | visualize skill hierarchies | inventory, build hierarchy, render SVG | `chain-skill` (optional, post-refactor) |
 | `social-router` | social content loop | produce → publish → feedback orchestration | platform skills (by goal) |
+| `sci-router` | scientific topic distill → references/paper (parent) | 7-stage local+arXiv pipeline | `sci-research-distill` (if goal = product concept → market/business plan); `sci-concept-valid` (if goal = concept verification) |
+| `sci-research-distill` | product concept → market/business plan (child) | 11-step artifact→market research | none (child; hooked by sci-router) |
+| `sci-concept-valid` | verify physical/science concept (child) | evidence-bounded literature+calculation check | none (child; hooked by sci-router) |
+| `file-organizer` | general file/folder organization | analyze, dedup, propose structure, cleanup | `file-distill` (when goal = topic sedimentation) |
+| `file-distill` | evidence-based topic sedimentation | 6-phase classify with move log | none (child) |
 
 ### External (installed) skills
 
@@ -114,6 +119,13 @@ assign-maus
 chain-skill
   └── rev-skill          (logic coherence; review goal only)
         └── viz-dboard    (doc layer + code layer compliance)
+
+sci-router (parent)
+  ├── sci-research-distill   (child; only when goal = product concept → market/business plan)
+  └── sci-concept-valid      (child; only when goal = evidence-bounded concept verification)
+
+file-organizer
+  └── file-distill       (only when goal = evidence-based topic sedimentation)
 ```
 
 ## 5. Hook lower-level skills — only when needed
@@ -135,6 +147,12 @@ Hook by **workflow goal**, not by skill name:
   `viz-dboard` (no drawing or demo verification needed).
 - User explicitly asks to "visualize / mindmap / show skill map" → hook
   `viz-dboard` for the mindmap.
+- Within **sci-router (parent)** workflow: hook a child only by goal —
+  - Goal is **product concept → market/business plan** → hook `sci-research-distill`.
+  - Goal is **evidence-bounded concept/model verification** → hook `sci-concept-valid`.
+  Do not duplicate children's steps in the parent; each child owns its rules.
+- Goal is **evidence-based topic sedimentation** (classify a messy dir into subtopic folders with a move log) → hook `file-distill`; general tidy/dedup/structure-suggest stays in `file-organizer`.
+- Two workflows sharing a schedule slot but holding different goals (e.g. skill-compliance check `[report-only]` vs personal-profile push `[publishes]`) → order them at the **systemd layer** (`Wants/After=` between services), not by hooking one skill body into another. Each service keeps its own invariant; the timer never publishes and the push service never audits.
 
 A hook without a matching goal is a violation — it adds cost and blurs ownership.
 
@@ -207,3 +225,5 @@ When converting a skill into Traditional Chinese (繁體中文):
 - Logic check: 2026-11-23 — rewritten as the **loop methodology** (user request: 「依照使用情境需求、嚴格邏輯、規則清楚、文件層合規、程式層合規、上下級鏈、分工明確、需要時才 hook、形成閉環、沉澱成 loop」). Added Core invariant loop table, need-based hook predicate, doc/code compliance stages, path invariant, and loop-closure requirement. Name kept as `chain-skill` per user decision; no new `loop-skill` created. RED evidence reused from prior observations (stale two-demo doc, raw matplotlib source misused, 荐家 path, unnecessary viz-dboard hook, doc-only fix).
 - Logic check: 2026-11-23 (second pass) — declared `skill-timer`'s allow-list as the **single source of truth** for "self-developed"; the Inventory table is now explicitly **index-only**. Same declaration added to `skill-router`'s Available skills table so the three lists cannot drift silently. No refactor rules duplicated.
 - Logic check: 2026-11-23 (social-router) — added the social content skill to allow-list first, then synced this index table and `skill-router`'s table. Index-only; allow-list remains authoritative. Renamed `social-loop` → `social-router` before first push.
+- Logic check: 2026-11-23 (parent-child chains) — added two chains per user request: (1) `sci-concept-valid` as shared child hooked by both `sci-router` and `sci-research-distill`; (2) `file-distill` as child of `file-organizer`. Updated Inventory table, Example chains, and need-based predicate. Only chain-skill edited (sub-skills' existing references left as-is).
+- Logic check: 2026-11-23 (research chain redesign) — user decided `sci-router` is the single parent with `sci-research-distill` and `sci-concept-valid` as children (replacing the earlier shared-child design). Inventory hooks, Example chains, and need-based predicate updated; file chain unchanged.
